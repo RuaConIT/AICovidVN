@@ -27,7 +27,7 @@ def load_audio_data(path: str,
                     limit=None) -> List[AudioData]:
     if load_from_npy:
         return numpy.load(path, allow_pickle=True).tolist()
-
+    
     data = []
     for idx, file in enumerate(glob(os.path.join(path, '*.wav'))):
         data_dict = {}

@@ -19,11 +19,11 @@ def extract_mfccs(data_list: List[AudioData],
 
     if not pad_mfccs:
         return data_list
-
-    return padding_mfccs(data_list,
-                         pad_mode=pad_mode,
-                         pad_constant_values=pad_constant_values,
-                         max_mfccs_length=max_mfccs_length)
+    else:
+        return padding_mfccs(data_list,
+                            pad_mode=pad_mode,
+                            pad_constant_values=pad_constant_values,
+                            max_mfccs_length=max_mfccs_length)
 
 
 def padding_mfccs(data_list: List[AudioData],
