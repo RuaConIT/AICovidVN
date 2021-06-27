@@ -7,6 +7,7 @@ import librosa
 import librosa.display
 import matplotlib.pyplot as plt
 from src.dataclass import AudioData, AudioFeatures, DataSet
+import numpy as np
 
 
 def plot_wav(audio_data: AudioData) -> None:
@@ -60,3 +61,24 @@ def save_data(output_file: str, data_list: List[Union[AudioData,
 
 def load_dataset(path) -> DataSet:
     return numpy.load(path, allow_pickle=True)[()]
+
+
+def transform(audio_data, meta_data):
+    result = []
+    audio_features = dict()
+    # get feature in audio_data
+    for i in range(len(audio_data)):
+        name = audio_data[i].name
+        features = audio_data[i].features.mfccs.reshape(-1)
+        audio_features[name] = features
+    #-----------------------------
+    for item in meta_data.values:
+        tmp = []
+        if item[1]=='male':
+            tmp.append(1)
+        else: tmp.append(0)
+        tmp.append(item[2])
+        tmp.append(item[3])
+        tmp += audio_features[item[4]].tolist()
+        result.append(np.array(tmp, dtype=float))
+    return np.array(result)
