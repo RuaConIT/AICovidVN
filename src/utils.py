@@ -1,4 +1,6 @@
 import os
+from librosa.core import audio
+import pandas
 import seaborn as sns
 import numpy
 from typing import List, Union
@@ -7,6 +9,7 @@ import librosa
 import librosa.display
 import matplotlib.pyplot as plt
 from src.dataclass import AudioData, AudioFeatures, DataSet
+import numpy as np
 
 
 def plot_wav(audio_data: AudioData) -> None:
@@ -60,3 +63,16 @@ def save_data(output_file: str, data_list: List[Union[AudioData,
 
 def load_dataset(path) -> DataSet:
     return numpy.load(path, allow_pickle=True)[()]
+
+
+def transform(dataset: DataSet) -> numpy.ndarray:
+    X = []
+    y = []
+    for sample in dataset.samples:
+        audio_data = sample.audio_data
+        features = audio_data.features.mfccs.reshape(-1)
+        X.append(features)
+        if dataset.is_train:
+            y.append(sample.assessment_result)
+
+    return np.array(X), np.array(y)
