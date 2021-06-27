@@ -30,12 +30,14 @@ def padding_mfccs(data_list: List[AudioData],
                   pad_mode='constant',
                   pad_constant_values=0,
                   max_mfccs_length=None) -> List[AudioData]:
-    longest_shape = max_mfccs_length
+    longest_shape = -1
     if not max_mfccs_length:
         for data in data_list:
             mfccs = data.features.mfccs
             if mfccs.shape[1] > longest_shape:
                 longest_shape = mfccs.shape[1]
+    else:
+        longest_shape = max_mfccs_length
 
     for data in data_list:
         mfccs = data.features.mfccs
