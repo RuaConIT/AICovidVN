@@ -1,3 +1,4 @@
+import warnings
 from src.dataclass import AudioData
 import librosa
 import numpy
@@ -24,6 +25,26 @@ def extract_mfccs(data_list: List[AudioData],
                          pad_mode=pad_mode,
                          pad_constant_values=pad_constant_values,
                          max_mfccs_length=max_mfccs_length)
+
+
+def extract_deltas_of_mfccs(data_list: List[AudioData]) -> List[AudioData]:
+    """
+    Extract velocity (delta) and acceleration (delta-delta) of MFCC
+    """
+    result = []
+    for audio_data in data_list:
+        mfccs = audio_data.features.mfccs
+        if mfccs is None:
+            warnings.warn("MFCCS is None. Ignoring.", RuntimeWarning)
+        else:
+            first_col = numpy.reshape(numpy.zeros_like(mfccs[:, 0]), (-1, 1))
+            velocity = numpy.diff(mfccs, prepend=first_col)
+            acceleration = numpy.diff(velocity, prepend=first_col)
+            audio_data.features.velocity_of_mfccs = velocity
+            audio_data.features.acceleration_of_mfccs = acceleration
+            result.append(audio_data)
+
+    return result
 
 
 def padding_mfccs(data_list: List[AudioData],

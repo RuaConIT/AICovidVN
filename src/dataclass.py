@@ -7,19 +7,21 @@ from dataclasses import dataclass, field
 class AudioFeatures:
     wav: numpy.ndarray = field(default=None)
     mfccs: numpy.ndarray = field(default=None)
+    velocity_of_mfccs: numpy.ndarray = field(default=None)
+    acceleration_of_mfccs: numpy.ndarray = field(default=None)
 
     def __repr__(self) -> str:
-        wav_shape = self.wav.shape
-        wav_dtype = self.wav.dtype
-        wav_str = f'array(shape={wav_shape}, dtype={wav_dtype})'
+        repr_strs = []
+        for attr_name, attr_value in vars(self).items():
+            repr_str = None
+            if attr_value is not None:
+                if isinstance(attr_value, numpy.ndarray):
+                    shape = attr_value.shape
+                    dtype = attr_value.dtype
+                    repr_str = f'{attr_name}=array(shape={shape}, dtype={dtype})'
+                repr_strs.append(repr_str)
 
-        mfccs_str = None
-        if self.mfccs is not None:
-            mfccs_shape = self.mfccs.shape
-            mfccs_dtype = self.mfccs.dtype
-            mfccs_str = f'array(shape={mfccs_shape}, dtype={mfccs_dtype})'
-
-        return f'AudioFeatures(wav={wav_str}, mfccs={mfccs_str})'
+        return f'AudioFeatures({", ".join(repr_strs)})'
 
 
 @dataclass
