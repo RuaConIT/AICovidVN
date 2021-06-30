@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 class AudioFeatures:
     wav: numpy.ndarray = field(default=None)
     mfccs: numpy.ndarray = field(default=None)
+    allfeat: numpy.ndarray = field(default=None)
 
     def __repr__(self) -> str:
         wav_shape = self.wav.shape
@@ -19,7 +20,13 @@ class AudioFeatures:
             mfccs_dtype = self.mfccs.dtype
             mfccs_str = f'array(shape={mfccs_shape}, dtype={mfccs_dtype})'
 
-        return f'AudioFeatures(wav={wav_str}, mfccs={mfccs_str})'
+        allfeat_str = None
+        if self.allfeat is not None:
+            allfeat_shape = self.allfeat.shape
+            allfeat_dtype = self.allfeat.dtype
+            allfeat_str = f'array(shape={allfeat_shape}, dtype={allfeat_dtype})'
+
+        return f'AudioFeatures(wav={wav_str}, mfccs={mfccs_str}, allfeat={allfeat_str})'
 
 
 @dataclass
