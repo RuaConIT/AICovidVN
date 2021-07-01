@@ -3,6 +3,7 @@ import librosa
 import numpy
 import librosa
 from typing import List
+from scipy.stats import kurtosis
 
 
 def extract_mfccs(data_list: List[AudioData],
@@ -30,7 +31,7 @@ def padding_mfccs(data_list: List[AudioData],
                   pad_mode='constant',
                   pad_constant_values=0,
                   max_mfccs_length=None) -> List[AudioData]:
-    longest_shape = max_mfccs_length
+    longest_shape = -1
     if not max_mfccs_length:
         for data in data_list:
             mfccs = data.features.mfccs
@@ -49,3 +50,11 @@ def padding_mfccs(data_list: List[AudioData],
         data.features.mfccs = mfccs
 
     return data_list
+
+
+def kurtosisOfMfccs(data_list: List[AudioData]) -> numpy.ndarray:
+    kurtosis_of_Mfccs = []
+    for audio_data in data_list:
+        kurtosis_of_Mfccs.append(kurtosis(audio_data.features.mfccs.reshape(-1)))
+    return numpy.array(kurtosis_of_Mfccs)
+
