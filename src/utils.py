@@ -60,3 +60,38 @@ def save_data(output_file: str, data_list: List[Union[AudioData,
 
 def load_dataset(path) -> DataSet:
     return numpy.load(path, allow_pickle=True)[()]
+
+
+def transform(dataset: DataSet) -> numpy.ndarray:  # Phước
+    X = []
+    y = []
+    for sample in dataset.samples:
+        audio_data = sample.audio_data
+        features = audio_data.features.mfccs.reshape(-1)
+        X.append(features)
+        if dataset.is_train:
+            y.append(sample.assessment_result)
+
+    return np.array(X), np.array(y)
+
+
+# def transform(audio_data, meta_data):  # Đức Anh
+#     result = []
+#     audio_features = dict()
+#     # get feature in audio_data
+#     for i in range(len(audio_data)):
+#         name = audio_data[i].name
+#         features = audio_data[i].features.mfccs.reshape(-1)
+#         audio_features[name] = features
+#     #-----------------------------
+#     for item in meta_data.values:
+#         tmp = []
+#         if item[1] == 'male':
+#             tmp.append(1)
+#         else:
+#             tmp.append(0)
+#         tmp.append(item[2])
+#         tmp.append(item[3])
+#         tmp += audio_features[item[4]].tolist()
+#         result.append(np.array(tmp, dtype=float))
+#     return np.array(result)
